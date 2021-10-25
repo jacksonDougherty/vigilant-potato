@@ -2,6 +2,7 @@
 \usepackage{fancyhdr}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{pifont}
 \usepackage{booktabs}
 
 \pagestyle{fancy}
@@ -21,5 +22,31 @@
 There are two traitors in the royal household. Thufir Hawat must determine which two are the traitors of Lady Jessica, Dr. Wellington Yueh, Gurney Halleck, and Duncan Idaho. Luckily, traitors always lie and non-traitors always tell the truth.
 
 Thufir interrogates each suspect. Jessica says she is not the traitor, and Wellington says he is not the traitor. Gurney says that Jessica or Wellington is a traitor, and Duncan says that Jessica or Gurney is a traitor. Thufir notes that $OR$ differs from $XOR$.  
+
+\subsection*{Solution}
+
+Since Thufir knows that there are only two traitors, and there are only four suspects, Thufir can easily check all 6 (4 choose 2) possible combinations of traitors. 
+
+Before examining the cases, Thufir can examine the statements from the suspects. Jessica and Wellington's statements both carry no content. We can examine Jessica's statement as an example since both Jessica and Wellington only address themselves. If Jessica is the traitor, then she lied about not being a traitor, which is consistent with traitor behavior. If Jessica is not a traitor, then Jessica told the truth about not being a traitor, which is consistent with non-traitor behavior. So, Thufir only needs to check Gurney and Duncan's statements. To make the case explicit where Gurney is the traitor, Gurney lied in his statement to Thufir, and therefore Jessica and Gurney are not traitors, by De Morgan's law. Similar logic shows that if Duncan is the traitor, then both Jessica and Gurney are not traitors.
+
+For convenience, Thufir decides to label traitor as False or 0, and non-traitors as True or 1. Then, consistency demands that traitors' statements are false, and non-traitors' statements are true, i.e., that statements match the truth value of the person giving them. In this phrasing, Thufir again sees why Jessica and Wellington's statements have no content, $J \oplus \not J = 1$ always. 
+
+Now Thufir can create the following table:
+
+\begin{table}[h]
+\begin{tabular}{ccccccc}\toprule
+$J$ & $W$ & $G$ & $D$ & $\neg J\cup \neg W$ & $\neg J\cup \neg G$ & Consistent?\\\midrule
+1 & 1 & 0 & 0 & 0 & 1 & \ding{55} \\
+1 & 0 & 1 & 0 & 1 & 0 & \ding{51} \\
+1 & 0 & 0 & 1 & 1 & 1 & \ding{55} \\
+0 & 1 & 1 & 0 & 1 & 1 & \ding{55} \\
+0 & 1 & 0 & 1 & 1 & 1 & \ding{55} \\
+0 & 0 & 1 & 1 & 1 & 1 & \ding{51} \\\bottomrule
+\end{tabular}
+\end{table}
+
+Comparing the values of $G$ and $\neg J \cup \neg W$ as well as $D$ and $\neg J\cup \neg G$, there are two possibilities which are consistent. Either Jessica and Wellington are the traitors, or Wellington and Duncan are the traitors. In either case, Wellington is the traitor, so Thufir may give Wellington's name to the Duke. 
+
+\section{Riddler Classic}
 
 \end{document}
