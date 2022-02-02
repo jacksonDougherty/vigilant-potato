@@ -1,0 +1,88 @@
+\documentclass[reqno]{amsart}
+\usepackage{fancyhdr}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{pifont}
+\usepackage{booktabs}
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{hyperref}
+
+
+\pagestyle{fancy}
+\chead{1/28/22}
+\rhead{Jackson Dougherty}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\hypersetup{
+    colorlinks=true,     
+    urlcolor=blue,
+    }
+
+\begin{document}
+\section*{Riddler 1-28-22}
+\section*{Jackson Dougherty}
+
+\section{Riddler Classic}
+
+\subsection*{Problem}
+
+Your old van holds 12 quarts of transmission fluid,and at the moment, all 12 quarts are "old." 
+
+If you changed all 12 quarts at once, there would be a high risk of transmission fluid. Instead, you plan to replace some fluid each month. Specifically, each month, you remove one quart of fluid from the transmission and add one quart of fresh fluid. As you drive the van throughout the month, the transmission fluid mixes thoroughly. 
+
+Transmission fluid becomes "old" after one year of use, i.e. new transmission  fluid is 'old' 12 months after it is added to the transmission. 
+
+You replace some of the fluid every month in this way for many years. After all that time, you check your transmission immediately after replacing one quart of fluid. What percent of the fluid is old?
+
+\subsection*{Solution}
+
+We can track the fluid as it ages month to month. We can track the volume of fluid $V_i$ that was added to the transmission $i$ months ago, for $0\leq i\leq 11$. Then, $V_0$ is the volume added this month, $V_1$ is the remaining fluid from last month, and $V_{11}$ is what remains from $11$ months ago. In principle, we could track the volume from each individual month into the past, but it will be simpler if $V_{12}$ describes the total volume of "old" fluid, regardless of its true age beyond 11 months. 
+
+Using this notation, we can consider what happens to $V_i$ for $i>0$. Since the fluid is completely mixed before each change, when we remove one quart of fluid from the transmission, we are removing one twelfth of each volume $V_i$ to make up the total volume removed. 
+
+As a concrete example, if six quarts of the fluid were one month old and the other half were "old," then we would remove $0.5=6/12$ quarts from both volumes. Furthermore, to maintain a constant volume, we need to replace the removed volume $V_i/12$ with an equal amount of new fluid for each age of oil. 
+
+Symbolically, we could write,
+\begin{align*}
+V_i \rightarrow \frac{11}{12} V_{i+1} + \frac{1}{12} V_0
+\end{align*}
+for each $i< 12$, and $V_{12} \rightarrow \frac{11}{12} V_{12} + \frac{1}{12} V_0$ because "old" fluid cannot get any fluid. Since this relationship is linear, we can describe the system using a state vector $\vec{V}$ and a transition matrix $T$,
+\begin{align*}
+\begin{pmatrix}
+V'_0 \\ V'_1 \\ V'_2 \\ \vdots \\V'_{10}\\ V'_{11} \\ V'_{12}
+\end{pmatrix} &= \begin{pmatrix}
+\frac{1}{12} & \frac{11}{12} & 0 & 0 & \hdots & 0 & 0 \\
+\frac{1}{12} & 0 & \frac{11}{12} & 0 & \hdots & 0 & 0 \\
+\frac{1}{12} & 0 & 0 & \frac{11}{12} &  & 0 & 0 \\
+\vdots & \vdots & \vdots & \vdots  & \ddots & \vdots & \vdots \\
+\frac{1}{12} & 0 & 0 & 0 & \hdots & \frac{11}{12} & 0 \\
+\frac{1}{12} & 0 & 0 & 0 & \hdots & 0 & \frac{11}{12} \\
+\frac{1}{12} & 0 & 0 & 0 & \hdots & 0 & \frac{11}{12} \\
+\end{pmatrix} \begin{pmatrix}
+V_0 \\ V_1 \\ V_2 \\ \vdots \\V_{10} \\ V_{11} \\ V_{12}
+\end{pmatrix}.
+\end{align*}
+
+Using these conventions, the problem becomes a discrete time, linear dynamical system, and we can model long time by repeatedly applying the transmission matrix $T$, i.e. by raising $T$ to a high power. As an aside, it does not matter whether the state vector is scaled to represent volumes or volume fractions, since that amounts to division by the scalar volume total $12$ quarts. 
+
+As time passes, we arrive at a steady state that is independent of the initial state, and the steady state starts after only 1 year of changes beginning with all "old" fluid. Put differently, $T^{12} = T^{13}=T^{1024}$ and every row is the same on a long enough time frame. Over a long time frame $n\rightarrow \infty$, the value of $\left(T^n\right)_{13, 13}$ determines the proportion of "old" fluid when starting entirely from "old" fluid, where the subscript notes the bottom rightmost entry in the matrix. 
+Using a numerical evaluation, we compute that fraction as 
+\begin{align*}
+0.3519956027735265 \approx 35.2\%
+\end{align*}
+
+In another framing, we note that 
+\begin{align*}
+\sum_{n=0}^{11} V_n &= \sum_{n=0}^{11} \frac{1}{12}\left(\frac{11}{12}\right)^n \\
+&\approx 0.6480044 \left(=1-0.3519956\right) 
+\end{align*}
+appears to represent the proportion of not "old" fluid, which is reasonable since each age of fluid behaves independently and we replace proportionally each age of fluid with new fluid each month. 
+
+In the end, we have quite a large proportion of "old" fluid in the transmission, and maybe your van would be better off with more infrequent, more complete \href{https://fivethirtyeight.com/features/can-you-tune-up-the-truck/}{transmission fluid exchanges}. 
+
+
+
+\end{document}
